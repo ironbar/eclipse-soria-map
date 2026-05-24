@@ -40,13 +40,20 @@ export const horizonLayer: RasterOverlayLayer = {
   opacity: 0.7,
 };
 
-export const plannedEclipseLayers: PlannedLayer[] = [
-  {
-    id: "goodness",
-    label: "Viewing quality",
-    description: "Color-coded suitability layer for eclipse visibility.",
-  },
-];
+export const goodnessLayer: RasterOverlayLayer = {
+  id: "goodness",
+  sourceId: "goodness-source",
+  layerId: "goodness-layer",
+  label: "Viewing quality",
+  description: "Color-coded suitability layer for eclipse visibility.",
+  tiles: ["./goodness/{z}/{x}/{y}.webp"],
+  bounds: [-3.702471465561472, 40.9823210660595, -0.9787057485932676, 42.348649534943576],
+  minzoom: 8,
+  maxzoom: 11,
+  opacity: 0.72,
+};
+
+export const plannedEclipseLayers: PlannedLayer[] = [];
 
 export const soriaBounds: [[number, number], [number, number]] = [
   [-3.55, 40.95],

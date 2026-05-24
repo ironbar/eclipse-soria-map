@@ -2,6 +2,7 @@ import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
   elevationLayer,
+  goodnessLayer,
   horizonLayer,
   plannedEclipseLayers,
   soriaBounds,
@@ -48,6 +49,13 @@ app.innerHTML = `
           <span>
             <strong>${horizonLayer.label}</strong>
             <small>Azimuth 284 degrees</small>
+          </span>
+        </label>
+        <label class="layer-option" title="${goodnessLayer.description}">
+          <input id="goodness-toggle" type="checkbox" />
+          <span>
+            <strong>${goodnessLayer.label}</strong>
+            <small>Green best, red blocked</small>
           </span>
         </label>
         <div class="planned-layers">
@@ -102,6 +110,7 @@ map.once("load", () => {
 
   addRasterOverlay(elevationLayer, firstSymbolLayer, "Elevation: CNIG MDT25 2nd coverage");
   addRasterOverlay(horizonLayer, firstSymbolLayer, "Horizon: computed from CNIG MDT25");
+  addRasterOverlay(goodnessLayer, firstSymbolLayer, "Viewing quality: computed from CNIG MDT25");
 
   new maplibregl.Marker({ color: "#0f766e" })
     .setLngLat(soriaCity)
@@ -147,23 +156,23 @@ function addRasterOverlay(
 }
 
 function bindLayerToggle(layer: RasterOverlayLayer) {
-  document.querySelector<HTMLInputElement>(`#${layer.id}-toggle`)?.addEventListener(
-    "change",
-    (event) => {
-    const isVisible = (event.target as HTMLInputElement).checked;
+  document
+    .querySelector<HTMLInputElement>(`#${layer.id}-toggle`)
+    ?.addEventListener("change", (event) => {
+      const isVisible = (event.target as HTMLInputElement).checked;
 
       if (!map.getLayer(layer.layerId)) {
-      return;
-    }
+        return;
+      }
 
-    map.setLayoutProperty(
+      map.setLayoutProperty(
         layer.layerId,
-      "visibility",
-      isVisible ? "visible" : "none",
-    );
-    },
-  );
+        "visibility",
+        isVisible ? "visible" : "none",
+      );
+    });
 }
 
 bindLayerToggle(elevationLayer);
 bindLayerToggle(horizonLayer);
+bindLayerToggle(goodnessLayer);

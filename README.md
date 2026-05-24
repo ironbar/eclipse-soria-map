@@ -18,12 +18,8 @@ when enabling our custom layers
 
 ## Current version
 
-The current version of the app shows an interactive political map centered on the province of Soria, a toggleable
-elevation layer generated from CNIG MDT25 data, and a toggleable horizon-elevation layer for the eclipse direction.
-The remaining custom eclipse layer is not implemented yet, but the UI and code structure already reserve the layer
-control for:
-
-- Viewing quality
+The current version of the app shows an interactive political map centered on the province of Soria, plus toggleable
+elevation, horizon-elevation, and viewing-quality layers generated from CNIG MDT25 data.
 
 ## Technologies
 
@@ -47,11 +43,12 @@ The raw CNIG MDT files are intentionally kept out of git because they are large.
 mdt200/raw/
 ```
 
-The checked-in elevation and horizon layers are generated as static WebP XYZ tiles in:
+The checked-in custom layers are generated as static WebP XYZ tiles in:
 
 ```text
 public/elevation/
 public/horizon/
+public/goodness/
 ```
 
 Regenerate the elevation tiles after changing the source data or the color ramp:
@@ -66,9 +63,19 @@ Regenerate the horizon-elevation layer after changing the source data or calcula
 npm run generate:horizon
 ```
 
+Regenerate the viewing-quality layer after changing the source data, horizon calculation parameters, or color
+thresholds:
+
+```bash
+npm run generate:goodness
+```
+
 The horizon calculation follows the README specification: it scans along eclipse azimuth 284 degrees, assumes flat
-earth, and uses an observer height of 1.5 meters. To keep the hosted app light, the generated layers currently use
-zoom levels 8 to 11. The elevation layer is about 1 MB, and the horizon layer is about 6 MB.
+earth, and uses an observer height of 1.5 meters. The viewing-quality layer classifies that computed horizon angle:
+green from 0 to 5 degrees, yellow from 5 to 7 degrees, and red above 7 degrees.
+
+To keep the hosted app light, the generated layers currently use zoom levels 8 to 11. The elevation layer is about
+1 MB, the horizon layer is about 6 MB, and the viewing-quality layer is about 5 MB.
 
 ## Local development
 

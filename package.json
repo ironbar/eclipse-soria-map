@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "generate:elevation": "node scripts/generate-elevation-tiles.mjs",
     "generate:horizon": "node scripts/generate-horizon-tiles.mjs",
+    "generate:goodness": "node scripts/generate-goodness-tiles.mjs",
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
