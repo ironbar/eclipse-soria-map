@@ -76,8 +76,9 @@ The horizon calculation follows the README specification: it scans along eclipse
 earth, and uses an observer height of 1.5 meters. The viewing-quality layer classifies that computed horizon angle:
 green from 0 to 5 degrees, yellow from 5 to 7 degrees, and red above 7 degrees.
 
-To keep the hosted app light, the generated layers currently use zoom levels 8 to 11. The elevation layer is about
-1 MB, the horizon layer is about 6 MB, and the viewing-quality layer is about 5 MB.
+To keep the hosted app light, the horizon and viewing-quality layers currently use zoom levels 8 to 11. The
+elevation layer uses zoom levels 8 to 12 so it is close to the native 25 m MDT resolution. The elevation layer is
+about 3.5 MB, the horizon layer is about 6 MB, and the viewing-quality layer is about 5 MB.
 
 ## Local development
 

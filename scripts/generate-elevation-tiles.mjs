@@ -13,7 +13,7 @@ const metadataPath = path.join(outputDir, "metadata.json");
 
 const tileSize = 256;
 const minZoom = 8;
-const maxZoom = 11;
+const maxZoom = 12;
 const cellSizeMeters = 10_000;
 const noDataThreshold = -1000;
 const sourceProjection =

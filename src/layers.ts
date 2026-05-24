@@ -36,7 +36,7 @@ export const elevationLayer: RasterOverlayLayer = {
   tiles: ["./elevation/{z}/{x}/{y}.webp"],
   bounds: [-3.702471465561472, 40.9823210660595, -0.9787057485932676, 42.348649534943576],
   minzoom: 8,
-  maxzoom: 11,
+  maxzoom: 12,
   opacity: 0.64,
   legend: {
     title: "Elevation",

@@ -2,7 +2,7 @@
   "tileFormat": "webp",
   "tileSize": 256,
   "minzoom": 8,
-  "maxzoom": 11,
+  "maxzoom": 12,
   "bounds": [
     -3.702471465561472,
     40.9823210660595,
@@ -13,11 +13,12 @@
   "sourceFiles": 256,
   "minElevation": 201.72801208496094,
   "maxElevation": 2313.364013671875,
-  "tiles": 251,
+  "tiles": 902,
   "zooms": {
     "8": 6,
     "9": 15,
     "10": 54,
-    "11": 176
+    "11": 176,
+    "12": 651
   }
 }
