@@ -1,5 +1,7 @@
 # Eclipse Soria Map
 
+[Go to map! 🗺️](https://ironbar.github.io/eclipse-soria-map/)
+
 ## Goal
 
 Create a webapplication that allows to visualize a map about the solar eclipse of 2026 in Soria. The app will
