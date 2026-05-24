@@ -12,6 +12,11 @@ import {
 } from "./layers";
 import "./styles.css";
 
+type BasemapLayerState = {
+  id: string;
+  visibility: "visible" | "none";
+};
+
 const app = document.querySelector<HTMLDivElement>("#app");
 
 if (!app) {
@@ -113,6 +118,7 @@ map.once("load", () => {
   addRasterOverlay(elevationLayer, firstSymbolLayer, "Elevation: CNIG MDT25 2nd coverage");
   addRasterOverlay(horizonLayer, firstSymbolLayer, "Horizon: computed from CNIG MDT25");
   addRasterOverlay(goodnessLayer, firstSymbolLayer, "Viewing quality: computed from CNIG MDT25");
+  captureBasemapLayerState();
   syncCustomLayerState();
 
   new maplibregl.Marker({ color: "#0f766e" })
@@ -207,6 +213,64 @@ function syncCustomLayerState() {
   });
 
   renderLegend(activeLayer);
+  syncBasemap(activeLayer !== undefined);
+}
+
+const originalBasemapLayerStates: BasemapLayerState[] = [];
+
+function captureBasemapLayerState() {
+  map.getStyle().layers.forEach((layer) => {
+    if (customLayers.some((customLayer) => customLayer.layerId === layer.id)) {
+      return;
+    }
+
+    originalBasemapLayerStates.push({
+      id: layer.id,
+      visibility: layer.layout?.visibility === "none" ? "none" : "visible",
+    });
+  });
+}
+
+function syncBasemap(hasActiveOverlay: boolean) {
+  originalBasemapLayerStates.forEach((layerState) => {
+    if (!map.getLayer(layerState.id)) {
+      return;
+    }
+
+    const nextVisibility = hasActiveOverlay
+      ? getOverlayBasemapVisibility(layerState.id)
+      : layerState.visibility;
+
+    map.setLayoutProperty(layerState.id, "visibility", nextVisibility);
+  });
+}
+
+function getOverlayBasemapVisibility(layerId: string) {
+  if (isReferenceLayer(layerId)) {
+    return "visible";
+  }
+
+  return "none";
+}
+
+function isReferenceLayer(layerId: string) {
+  const id = layerId.toLowerCase();
+
+  return (
+    id.includes("label") ||
+    id.includes("name") ||
+    id.includes("place") ||
+    id.includes("city") ||
+    id.includes("town") ||
+    id.includes("village") ||
+    id.includes("road") ||
+    id.includes("highway") ||
+    id.includes("street") ||
+    id.includes("rail") ||
+    id.includes("boundary") ||
+    id.includes("admin") ||
+    id.includes("border")
+  );
 }
 
 function renderLegend(layer: RasterOverlayLayer | undefined) {

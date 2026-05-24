@@ -87,6 +87,7 @@ h2 {
 .map {
   position: absolute;
   inset: 0;
+  background: #ffffff;
 }
 
 .layer-panel {
