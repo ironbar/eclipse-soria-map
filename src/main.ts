@@ -1,6 +1,13 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { elevationLayer, plannedEclipseLayers, soriaBounds, soriaCity } from "./layers";
+import {
+  elevationLayer,
+  horizonLayer,
+  plannedEclipseLayers,
+  soriaBounds,
+  soriaCity,
+  type RasterOverlayLayer,
+} from "./layers";
 import "./styles.css";
 
 const app = document.querySelector<HTMLDivElement>("#app");
@@ -34,6 +41,13 @@ app.innerHTML = `
           <span>
             <strong>${elevationLayer.label}</strong>
             <small>MDT25 color relief</small>
+          </span>
+        </label>
+        <label class="layer-option" title="${horizonLayer.description}">
+          <input id="horizon-toggle" type="checkbox" />
+          <span>
+            <strong>${horizonLayer.label}</strong>
+            <small>Azimuth 284 degrees</small>
           </span>
         </label>
         <div class="planned-layers">
@@ -86,36 +100,8 @@ map.once("load", () => {
     .getStyle()
     .layers.find((layer) => layer.type === "symbol")?.id;
 
-  map.addSource(elevationLayer.sourceId, {
-    type: "raster",
-    tiles: elevationLayer.tiles,
-    bounds: elevationLayer.bounds,
-    minzoom: elevationLayer.minzoom,
-    maxzoom: elevationLayer.maxzoom,
-    tileSize: 256,
-    attribution: "Elevation: CNIG MDT25 2nd coverage",
-  });
-
-  map.addLayer(
-    {
-      id: elevationLayer.layerId,
-      type: "raster",
-      source: elevationLayer.sourceId,
-      layout: {
-        visibility: "none",
-      },
-      paint: {
-        "raster-opacity": elevationLayer.opacity,
-        "raster-fade-duration": 120,
-      },
-    },
-    firstSymbolLayer,
-  );
-
-  const elevationToggle = document.querySelector<HTMLInputElement>("#elevation-toggle");
-  if (elevationToggle?.checked) {
-    map.setLayoutProperty(elevationLayer.layerId, "visibility", "visible");
-  }
+  addRasterOverlay(elevationLayer, firstSymbolLayer, "Elevation: CNIG MDT25 2nd coverage");
+  addRasterOverlay(horizonLayer, firstSymbolLayer, "Horizon: computed from CNIG MDT25");
 
   new maplibregl.Marker({ color: "#0f766e" })
     .setLngLat(soriaCity)
@@ -123,18 +109,61 @@ map.once("load", () => {
     .addTo(map);
 });
 
-document
-  .querySelector<HTMLInputElement>("#elevation-toggle")
-  ?.addEventListener("change", (event) => {
+function addRasterOverlay(
+  layer: RasterOverlayLayer,
+  beforeLayerId: string | undefined,
+  attribution: string,
+) {
+  map.addSource(layer.sourceId, {
+    type: "raster",
+    tiles: layer.tiles,
+    bounds: layer.bounds,
+    minzoom: layer.minzoom,
+    maxzoom: layer.maxzoom,
+    tileSize: 256,
+    attribution,
+  });
+
+  map.addLayer(
+    {
+      id: layer.layerId,
+      type: "raster",
+      source: layer.sourceId,
+      layout: {
+        visibility: "none",
+      },
+      paint: {
+        "raster-opacity": layer.opacity,
+        "raster-fade-duration": 120,
+      },
+    },
+    beforeLayerId,
+  );
+
+  const toggle = document.querySelector<HTMLInputElement>(`#${layer.id}-toggle`);
+  if (toggle?.checked) {
+    map.setLayoutProperty(layer.layerId, "visibility", "visible");
+  }
+}
+
+function bindLayerToggle(layer: RasterOverlayLayer) {
+  document.querySelector<HTMLInputElement>(`#${layer.id}-toggle`)?.addEventListener(
+    "change",
+    (event) => {
     const isVisible = (event.target as HTMLInputElement).checked;
 
-    if (!map.getLayer(elevationLayer.layerId)) {
+      if (!map.getLayer(layer.layerId)) {
       return;
     }
 
     map.setLayoutProperty(
-      elevationLayer.layerId,
+        layer.layerId,
       "visibility",
       isVisible ? "visible" : "none",
     );
-  });
+    },
+  );
+}
+
+bindLayerToggle(elevationLayer);
+bindLayerToggle(horizonLayer);

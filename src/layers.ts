@@ -27,12 +27,20 @@ export const elevationLayer: RasterOverlayLayer = {
   opacity: 0.64,
 };
 
+export const horizonLayer: RasterOverlayLayer = {
+  id: "horizon",
+  sourceId: "horizon-source",
+  layerId: "horizon-layer",
+  label: "Horizon elevation",
+  description: "Horizon angle toward the eclipse azimuth of 284 degrees.",
+  tiles: ["./horizon/{z}/{x}/{y}.webp"],
+  bounds: [-3.702471465561472, 40.9823210660595, -0.9787057485932676, 42.348649534943576],
+  minzoom: 8,
+  maxzoom: 11,
+  opacity: 0.7,
+};
+
 export const plannedEclipseLayers: PlannedLayer[] = [
-  {
-    id: "horizon",
-    label: "Horizon elevation",
-    description: "Horizon angle toward the eclipse azimuth of 284 degrees.",
-  },
   {
     id: "goodness",
     label: "Viewing quality",

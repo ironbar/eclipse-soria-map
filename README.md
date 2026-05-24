@@ -18,11 +18,11 @@ when enabling our custom layers
 
 ## Current version
 
-The current version of the app shows an interactive political map centered on the province of Soria and a
-toggleable elevation layer generated from CNIG MDT25 data. The remaining custom eclipse layers are not implemented
-yet, but the UI and code structure already reserve the layer controls for:
+The current version of the app shows an interactive political map centered on the province of Soria, a toggleable
+elevation layer generated from CNIG MDT25 data, and a toggleable horizon-elevation layer for the eclipse direction.
+The remaining custom eclipse layer is not implemented yet, but the UI and code structure already reserve the layer
+control for:
 
-- Horizon elevation
 - Viewing quality
 
 ## Technologies
@@ -47,10 +47,11 @@ The raw CNIG MDT files are intentionally kept out of git because they are large.
 mdt200/raw/
 ```
 
-The checked-in elevation layer is generated as static WebP XYZ tiles in:
+The checked-in elevation and horizon layers are generated as static WebP XYZ tiles in:
 
 ```text
 public/elevation/
+public/horizon/
 ```
 
 Regenerate the elevation tiles after changing the source data or the color ramp:
@@ -59,8 +60,15 @@ Regenerate the elevation tiles after changing the source data or the color ramp:
 npm run generate:elevation
 ```
 
-The generated layer currently uses zoom levels 8 to 11 and is about 1 MB, which keeps the GitHub Pages deployment
-small and fast.
+Regenerate the horizon-elevation layer after changing the source data or calculation parameters:
+
+```bash
+npm run generate:horizon
+```
+
+The horizon calculation follows the README specification: it scans along eclipse azimuth 284 degrees, assumes flat
+earth, and uses an observer height of 1.5 meters. To keep the hosted app light, the generated layers currently use
+zoom levels 8 to 11. The elevation layer is about 1 MB, and the horizon layer is about 6 MB.
 
 ## Local development
 

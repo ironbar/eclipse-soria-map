@@ -1,0 +1,28 @@
+{
+  "tileFormat": "webp",
+  "tileSize": 256,
+  "analysisTileSize": 64,
+  "demGridResolution": 100,
+  "minzoom": 8,
+  "maxzoom": 11,
+  "bounds": [
+    -3.702471465561472,
+    40.9823210660595,
+    -0.9787057485932676,
+    42.348649534943576
+  ],
+  "sourceProjection": "EPSG:25830",
+  "sourceFiles": 256,
+  "observerHeightMeters": 1.5,
+  "eclipseAzimuthDegrees": 284,
+  "maxDistanceMeters": 80000,
+  "minHorizonDegrees": -40.5994226386172,
+  "maxHorizonDegrees": 74.16839477917989,
+  "tiles": 251,
+  "zooms": {
+    "8": 6,
+    "9": 15,
+    "10": 54,
+    "11": 176
+  }
+}
