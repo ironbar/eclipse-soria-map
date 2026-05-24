@@ -1,6 +1,7 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
+  customLayers,
   elevationLayer,
   goodnessLayer,
   horizonLayer,
@@ -74,6 +75,7 @@ app.innerHTML = `
             .join("")}
         </div>
       </aside>
+      <aside id="legend" class="legend-panel" aria-label="Active layer legend" hidden></aside>
     </section>
   </main>
 `;
@@ -111,6 +113,7 @@ map.once("load", () => {
   addRasterOverlay(elevationLayer, firstSymbolLayer, "Elevation: CNIG MDT25 2nd coverage");
   addRasterOverlay(horizonLayer, firstSymbolLayer, "Horizon: computed from CNIG MDT25");
   addRasterOverlay(goodnessLayer, firstSymbolLayer, "Viewing quality: computed from CNIG MDT25");
+  syncCustomLayerState();
 
   new maplibregl.Marker({ color: "#0f766e" })
     .setLngLat(soriaCity)
@@ -150,7 +153,7 @@ function addRasterOverlay(
   );
 
   const toggle = document.querySelector<HTMLInputElement>(`#${layer.id}-toggle`);
-  if (toggle?.checked) {
+  if (toggle?.checked && isOnlyCheckedCustomLayer(layer)) {
     map.setLayoutProperty(layer.layerId, "visibility", "visible");
   }
 }
@@ -161,18 +164,84 @@ function bindLayerToggle(layer: RasterOverlayLayer) {
     ?.addEventListener("change", (event) => {
       const isVisible = (event.target as HTMLInputElement).checked;
 
-      if (!map.getLayer(layer.layerId)) {
-        return;
+      if (isVisible) {
+        customLayers
+          .filter((customLayer) => customLayer.id !== layer.id)
+          .forEach((customLayer) => {
+            const toggle = document.querySelector<HTMLInputElement>(
+              `#${customLayer.id}-toggle`,
+            );
+            if (toggle) {
+              toggle.checked = false;
+            }
+          });
       }
 
-      map.setLayoutProperty(
-        layer.layerId,
-        "visibility",
-        isVisible ? "visible" : "none",
-      );
+      syncCustomLayerState();
     });
 }
 
-bindLayerToggle(elevationLayer);
-bindLayerToggle(horizonLayer);
-bindLayerToggle(goodnessLayer);
+function isOnlyCheckedCustomLayer(layer: RasterOverlayLayer) {
+  return customLayers.every((customLayer) => {
+    const toggle = document.querySelector<HTMLInputElement>(`#${customLayer.id}-toggle`);
+    return customLayer.id === layer.id ? toggle?.checked : !toggle?.checked;
+  });
+}
+
+function syncCustomLayerState() {
+  const activeLayer = customLayers.find((layer) => {
+    const toggle = document.querySelector<HTMLInputElement>(`#${layer.id}-toggle`);
+    return toggle?.checked;
+  });
+
+  customLayers.forEach((layer) => {
+    const isVisible = activeLayer?.id === layer.id;
+    const toggle = document.querySelector<HTMLInputElement>(`#${layer.id}-toggle`);
+    const option = toggle?.closest(".layer-option");
+
+    if (map.getLayer(layer.layerId)) {
+      map.setLayoutProperty(layer.layerId, "visibility", isVisible ? "visible" : "none");
+    }
+
+    option?.classList.toggle("selected", isVisible);
+  });
+
+  renderLegend(activeLayer);
+}
+
+function renderLegend(layer: RasterOverlayLayer | undefined) {
+  const legend = document.querySelector<HTMLElement>("#legend");
+
+  if (!legend) {
+    return;
+  }
+
+  if (!layer) {
+    legend.hidden = true;
+    legend.innerHTML = "";
+    return;
+  }
+
+  legend.hidden = false;
+  legend.innerHTML = `
+    <div class="legend-heading">
+      <strong>${layer.legend.title}</strong>
+      <span>${layer.legend.unit}</span>
+    </div>
+    <div class="legend-bar" style="background: ${layer.legend.gradient}"></div>
+    <div class="legend-stops">
+      ${layer.legend.stops
+        .map(
+          (stop) => `
+            <span>
+              <i style="background: ${stop.color}"></i>
+              ${stop.value}
+            </span>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+customLayers.forEach(bindLayerToggle);

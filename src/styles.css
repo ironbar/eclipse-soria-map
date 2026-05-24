@@ -150,9 +150,83 @@ h2 {
   background: #f3fbf8;
 }
 
+.layer-option.selected {
+  border-color: rgba(15, 118, 110, 0.48);
+  background: #e9f7f2;
+}
+
 .layer-option.disabled {
   color: #6f7974;
   background: #f8f8f5;
+}
+
+.legend-panel {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1;
+  width: min(340px, calc(100vw - 2rem));
+  padding: 0.8rem;
+  border: 1px solid rgba(23, 32, 29, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 14px 36px rgba(30, 38, 35, 0.16);
+  backdrop-filter: blur(12px);
+}
+
+.legend-panel[hidden] {
+  display: none;
+}
+
+.legend-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.55rem;
+}
+
+.legend-heading strong {
+  font-size: 0.9rem;
+}
+
+.legend-heading span {
+  color: #63716a;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.legend-bar {
+  height: 0.8rem;
+  border: 1px solid rgba(23, 32, 29, 0.16);
+  border-radius: 999px;
+}
+
+.legend-stops {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  color: #34413c;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.legend-stops span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.legend-stops i {
+  display: inline-block;
+  width: 0.48rem;
+  height: 0.48rem;
+  flex: 0 0 auto;
+  border: 1px solid rgba(23, 32, 29, 0.18);
+  border-radius: 999px;
 }
 
 .maplibregl-ctrl-bottom-left {
@@ -172,5 +246,10 @@ h2 {
     top: auto;
     max-height: 42vh;
     overflow: auto;
+  }
+
+  .legend-panel {
+    right: 1rem;
+    bottom: calc(1rem + min(42vh, 360px));
   }
 }
