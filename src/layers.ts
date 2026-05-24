@@ -4,12 +4,30 @@ export type PlannedLayer = {
   description: string;
 };
 
+export type RasterOverlayLayer = PlannedLayer & {
+  sourceId: string;
+  layerId: string;
+  tiles: string[];
+  bounds: [number, number, number, number];
+  minzoom: number;
+  maxzoom: number;
+  opacity: number;
+};
+
+export const elevationLayer: RasterOverlayLayer = {
+  id: "elevation",
+  sourceId: "elevation-source",
+  layerId: "elevation-layer",
+  label: "Elevation",
+  description: "Colorized MDT25 altitude tiles for the province of Soria.",
+  tiles: ["./elevation/{z}/{x}/{y}.webp"],
+  bounds: [-3.702471465561472, 40.9823210660595, -0.9787057485932676, 42.348649534943576],
+  minzoom: 8,
+  maxzoom: 11,
+  opacity: 0.64,
+};
+
 export const plannedEclipseLayers: PlannedLayer[] = [
-  {
-    id: "elevation",
-    label: "Elevation",
-    description: "MDT200 altitude tiles for the province of Soria.",
-  },
   {
     id: "horizon",
     label: "Horizon elevation",

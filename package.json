@@ -6,12 +6,16 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc && vite build",
+    "generate:elevation": "node scripts/generate-elevation-tiles.mjs",
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
     "maplibre-gl": "^5.9.0"
   },
   "devDependencies": {
+    "geotiff": "^3.0.5",
+    "proj4": "^2.20.8",
+    "sharp": "^0.34.5",
     "typescript": "^5.8.3",
     "vite": "^6.3.5"
   }

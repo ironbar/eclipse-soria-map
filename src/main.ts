@@ -1,6 +1,6 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { plannedEclipseLayers, soriaBounds, soriaCity } from "./layers";
+import { elevationLayer, plannedEclipseLayers, soriaBounds, soriaCity } from "./layers";
 import "./styles.css";
 
 const app = document.querySelector<HTMLDivElement>("#app");
@@ -27,6 +27,13 @@ app.innerHTML = `
           <span>
             <strong>Political map</strong>
             <small>Towns, roads, rivers, terrain context</small>
+          </span>
+        </label>
+        <label class="layer-option" title="${elevationLayer.description}">
+          <input id="elevation-toggle" type="checkbox" />
+          <span>
+            <strong>${elevationLayer.label}</strong>
+            <small>MDT25 color relief</small>
           </span>
         </label>
         <div class="planned-layers">
@@ -75,8 +82,59 @@ map.addControl(
 );
 
 map.once("load", () => {
+  const firstSymbolLayer = map
+    .getStyle()
+    .layers.find((layer) => layer.type === "symbol")?.id;
+
+  map.addSource(elevationLayer.sourceId, {
+    type: "raster",
+    tiles: elevationLayer.tiles,
+    bounds: elevationLayer.bounds,
+    minzoom: elevationLayer.minzoom,
+    maxzoom: elevationLayer.maxzoom,
+    tileSize: 256,
+    attribution: "Elevation: CNIG MDT25 2nd coverage",
+  });
+
+  map.addLayer(
+    {
+      id: elevationLayer.layerId,
+      type: "raster",
+      source: elevationLayer.sourceId,
+      layout: {
+        visibility: "none",
+      },
+      paint: {
+        "raster-opacity": elevationLayer.opacity,
+        "raster-fade-duration": 120,
+      },
+    },
+    firstSymbolLayer,
+  );
+
+  const elevationToggle = document.querySelector<HTMLInputElement>("#elevation-toggle");
+  if (elevationToggle?.checked) {
+    map.setLayoutProperty(elevationLayer.layerId, "visibility", "visible");
+  }
+
   new maplibregl.Marker({ color: "#0f766e" })
     .setLngLat(soriaCity)
     .setPopup(new maplibregl.Popup().setText("Soria"))
     .addTo(map);
 });
+
+document
+  .querySelector<HTMLInputElement>("#elevation-toggle")
+  ?.addEventListener("change", (event) => {
+    const isVisible = (event.target as HTMLInputElement).checked;
+
+    if (!map.getLayer(elevationLayer.layerId)) {
+      return;
+    }
+
+    map.setLayoutProperty(
+      elevationLayer.layerId,
+      "visibility",
+      isVisible ? "visible" : "none",
+    );
+  });

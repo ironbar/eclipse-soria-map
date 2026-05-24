@@ -1,3 +1,5 @@
 node_modules/
 dist/
 .DS_Store
+mdt200/raw/
+mdt200/descargasCDD.jar

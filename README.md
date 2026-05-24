@@ -18,10 +18,10 @@ when enabling our custom layers
 
 ## Current version
 
-The first version of the app shows an interactive political map centered on the province of Soria. The custom
-eclipse layers are not implemented yet, but the UI and code structure already reserve the layer controls for:
+The current version of the app shows an interactive political map centered on the province of Soria and a
+toggleable elevation layer generated from CNIG MDT25 data. The remaining custom eclipse layers are not implemented
+yet, but the UI and code structure already reserve the layer controls for:
 
-- Elevation
 - Horizon elevation
 - Viewing quality
 
@@ -33,9 +33,34 @@ eclipse layers are not implemented yet, but the UI and code structure already re
 - **MapLibre GL JS**: open-source WebGL map renderer used for the interactive political map.
 - **OpenFreeMap Liberty style**: free vector basemap style used for the initial political map with roads, rivers,
   towns and labels.
+- **GeoTIFF + proj4 + sharp**: preprocessing-only Node dependencies used to read the MDT files, project the raster
+  data, colorize elevations, and generate compact WebP map tiles.
 
 Future custom layers should be precomputed offline and published as static map tiles, preferably raster tiles or
 PMTiles archives, so the GitHub Pages deployment stays lightweight.
+
+## Elevation tiles
+
+The raw CNIG MDT files are intentionally kept out of git because they are large. They should live locally in:
+
+```text
+mdt200/raw/
+```
+
+The checked-in elevation layer is generated as static WebP XYZ tiles in:
+
+```text
+public/elevation/
+```
+
+Regenerate the elevation tiles after changing the source data or the color ramp:
+
+```bash
+npm run generate:elevation
+```
+
+The generated layer currently uses zoom levels 8 to 11 and is about 1 MB, which keeps the GitHub Pages deployment
+small and fast.
 
 ## Local development
 

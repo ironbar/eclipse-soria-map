@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <jnlp spec="1.0+" codebase="https://centrodedescargas.cnig.es/CentroDescargas" href="">
+ <information> <title>Centro de Descargas</title> <vendor>CNIG</vendor> </information>
+ <security><all-permissions/></security>
+ <resources> <j2se version="1.6+" href="https://centrodedescargas.cnig.es/CentroDescargas"/> <jar href="descargasCDD.jar" main="true" /> </resources>
+ <applet-desc name="CNIG Centro de descargas"  main-class="descargascdd.CnigCDD" width="900" height="600">
+<param name="idioma" value="ES"/>
+<param name="codLicencia" value="LIGW267022494"/>
+ </applet-desc>
+ <update check="always"/>
+ </jnlp>
